@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card_margin">5dp</dimen>
+    <dimen name="card_album_radius">4dp</dimen>
+    <dimen name="text_size_headline_material">28sp</dimen>
+    <dimen name="card_elevation">4sp</dimen>
+</resources>

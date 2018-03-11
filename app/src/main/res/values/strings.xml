@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Movies</string>
+    <string name="action_refresh">refresh</string>
+
+    <string-array name="image_sizes">
+        <item>w92</item>
+        <item>w154</item>
+        <item>w185</item>
+        <item>w342</item>
+        <item>w500</item>
+        <item>w780</item>
+        <item>original</item>
+    </string-array>
+    <string-array name="backdrop_sizes">
+        <item>w300</item>
+        <item>w780</item>
+        <item>w1280</item>
+        <item>original</item>
+    </string-array>
+
+    <string name="movie_path">movie</string>
+    <string name="popular_path">popular</string>
+    <string name="top_rated_path">top_rated</string>
+    <string name="movie_rank">preferable_rank</string>
+    <string name="base_image_url">http://image.tmdb.org/t/p/</string>
+    <string name="base_api">https://api.themoviedb.org/3/</string>
+    <string name="no_internet">Please enable internet connection and press the "refresh" button.</string>
+    <string name="radio_selected_key">pref_radio_selected_key</string>
+    <string name="movie_poster">Movie Poster Image</string>
+    <string name="rank">Ranking</string>
+    <string name="popular">Popular</string>
+    <string name="top_rated">Top rated</string>
+    <string name="release_date">Release date:</string>
+    <string name="rating">Rating :</string>
+    <string name="details">Details </string>
+
+</resources>
