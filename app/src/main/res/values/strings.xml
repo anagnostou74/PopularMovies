@@ -33,5 +33,6 @@
     <string name="release_date">Release date:</string>
     <string name="rating">Rating :</string>
     <string name="details">Details </string>
+    <string name="trailer">Press to see movie trailer</string>
 
 </resources>
