@@ -22,7 +22,9 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -36,6 +38,7 @@ import static gr.mobap.popularmovies.data.MoviePreferences.LOADER_ID;
 import static gr.mobap.popularmovies.data.MoviePreferences.popular_path;
 import static gr.mobap.popularmovies.data.MoviePreferences.movieSection;
 import static gr.mobap.popularmovies.data.MoviePreferences.top_rated_path;
+
 // Main Activity creates a 2 columns grid layout, settings with 'popular' and 'top rating' radio choices for users
 public class MainActivity extends AppCompatActivity implements
         MovieAdapter.PosterClickListener,
@@ -46,8 +49,12 @@ public class MainActivity extends AppCompatActivity implements
     private PopupWindow popupWindow;
     private MovieAdapter movieAdapter;
     private int selectedRadioId;
-    @BindView(R.id.recyclerview_movies) RecyclerView gridRecyclerView;
-    @BindView(R.id.pb_loading_indicator) ProgressBar loading_indicator;
+    @BindView(R.id.recyclerview_movies)
+    RecyclerView gridRecyclerView;
+    @BindView(R.id.pb_loading_indicator)
+    ProgressBar loading_indicator;
+    @BindView(R.id.error_message)
+    TextView mErrorMessageDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements
     private void showDataView() {
         gridRecyclerView.setVisibility(View.VISIBLE);
         loading_indicator.setVisibility(View.INVISIBLE);
+        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
     }
 
     private void showLoadingView() {
@@ -221,6 +229,8 @@ public class MainActivity extends AppCompatActivity implements
         if (!NetworkUtility.isConnected(MainActivity.this)) {
             Toast.makeText(MainActivity.this,
                     R.string.no_internet, Toast.LENGTH_SHORT).show();
+            mErrorMessageDisplay.setVisibility(View.VISIBLE);
+            mErrorMessageDisplay.setText(getResources().getString(R.string.no_internet));
             loading_indicator.setVisibility(View.INVISIBLE);
         }
     }

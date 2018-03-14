@@ -13,6 +13,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static gr.mobap.popularmovies.data.MoviePreferences.API_KEY;
 import static gr.mobap.popularmovies.data.MoviePreferences.APP_KEY;
@@ -43,23 +47,12 @@ public class NetworkUtility {
 
 
     static String getResponseFromHttpUrl(URL uri) throws IOException {
-        URL url = new URL(uri.toString());
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            String response = null;
-            if (hasInput) {
-                response = scanner.next();
-            }
-            scanner.close();
-            return response;
-        } finally {
-            urlConnection.disconnect();
-        }
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(uri)
+                .build();
+        Response response = client.newCall(request).execute();
+        return response.body().string();
     }
 
     public static boolean isConnected(Context ctx) {

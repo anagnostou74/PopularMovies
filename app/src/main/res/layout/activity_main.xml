@@ -21,4 +21,14 @@
         android:layout_gravity="center"
         android:visibility="invisible" />
 
+    <TextView
+        android:id="@+id/error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
 </android.support.design.widget.CoordinatorLayout>
