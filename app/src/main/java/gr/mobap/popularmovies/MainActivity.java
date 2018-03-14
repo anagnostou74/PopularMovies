@@ -25,6 +25,8 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import gr.mobap.popularmovies.data.MovieAdapter;
 import gr.mobap.popularmovies.model.MovieObject;
 import gr.mobap.popularmovies.utilities.MovieLoader;
@@ -43,16 +45,16 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = MainActivity.class.getSimpleName();
     private PopupWindow popupWindow;
     private MovieAdapter movieAdapter;
-    private ProgressBar loading_indicator;
-    private RecyclerView gridRecyclerView;
     private int selectedRadioId;
+    @BindView(R.id.recyclerview_movies) RecyclerView gridRecyclerView;
+    @BindView(R.id.pb_loading_indicator) ProgressBar loading_indicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        gridRecyclerView = findViewById(R.id.recyclerview_movies);
         int spanCount = 2;
         GridLayoutManager manager = new GridLayoutManager(this, spanCount);
         gridRecyclerView.setLayoutManager(manager);
@@ -60,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements
         movieAdapter = new MovieAdapter(this, this);
         gridRecyclerView.setAdapter(movieAdapter);
 
-        loading_indicator = findViewById(R.id.pb_loading_indicator);
         showLoadingView();
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);

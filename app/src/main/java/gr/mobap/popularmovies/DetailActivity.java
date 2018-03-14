@@ -7,37 +7,46 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import gr.mobap.popularmovies.model.MovieObject;
 
 import static gr.mobap.popularmovies.data.MoviePreferences.base_image_url;
+
 // The Detail Activity responsible to show Title, release date, rating, overview and to display poster
 public class DetailActivity extends AppCompatActivity {
 
     private static final String MOVIE_EXTRA = "MOVIE";
-    private PopupWindow popupWindow;
+    @BindView(R.id.activity_detail_header)
+    ImageView ivPosterHeader;
+    @BindView(R.id.activity_detail_title)
+    TextView tvDisplayData;
+    @BindView(R.id.activity_detail_poster)
+    ImageView ivPoster;
+    @BindView(R.id.activity_detail_release_date)
+    TextView tvReleaseDate;
+    @BindView(R.id.activity_detail_rating)
+    TextView tvRating;
+    @BindView(R.id.activity_detail_overview)
+    TextView tvOverview;
+    @BindView(R.id.card_view)
+    CardView cardView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-
-        final Toolbar toolbar = findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ImageView ivPosterHeader = findViewById(R.id.activity_detail_header);
-        TextView tvDisplayData = findViewById(R.id.activity_detail_title);
-        ImageView ivPoster = findViewById(R.id.activity_detail_poster);
-        TextView tvReleaseDate = findViewById(R.id.activity_detail_release_date);
-        TextView tvRating = findViewById(R.id.activity_detail_rating);
-        TextView tvOverview = findViewById(R.id.activity_detail_overview);
         setColor();
-        CardView cardView = findViewById(R.id.card_view);
         cardView.setCardBackgroundColor(getColorCrtWay());
         Intent intentDetailActivity = getIntent();
 
@@ -78,27 +87,14 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
     }
+
     private int mColor = 0;
-    private void setColor()
-    {
+
+    private void setColor() {
         mColor = R.color.colorAccent;
     }
 
-    private int getColorCrtWay()
-    {
+    private int getColorCrtWay() {
         return getResources().getColor(mColor);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (popupWindow != null) {
-            if (popupWindow.isShowing()) {
-                popupWindow.dismiss();
-            } else {
-                super.onBackPressed();
-            }
-        } else {
-            super.onBackPressed();
-        }
     }
 }

@@ -12,6 +12,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import gr.mobap.popularmovies.R;
 import gr.mobap.popularmovies.model.MovieObject;
 
@@ -69,11 +71,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder {
-        final ImageView posterImageView;
+        @BindView(R.id.poster)
+        ImageView posterImageView;
 
         MovieViewHolder(View itemView) {
             super(itemView);
-            posterImageView = itemView.findViewById(R.id.poster);
+            ButterKnife.bind(this, itemView);
             posterImageView.setOnClickListener(v -> {
                 int clickedPosition = getAdapterPosition();
                 mPosterClickListener.onPosterClicked(mMovieData.get(clickedPosition));
