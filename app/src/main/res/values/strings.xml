@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Movies</string>
+    <string name="created_by">Created by Costas Anagnostou</string>
     <string name="action_refresh">refresh</string>
 
     <string-array name="image_sizes">
@@ -33,6 +34,7 @@
     <string name="release_date">Release date:</string>
     <string name="rating">Rating :</string>
     <string name="details">Details </string>
+    <string name="user_reviews">User reviews</string>
     <string name="trailer">Press to see movie trailer</string>
 
 </resources>
