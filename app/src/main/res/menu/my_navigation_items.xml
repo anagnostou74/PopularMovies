@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_overview"
         android:icon="@drawable/ic_movie"
         android:title="@string/details" />
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_trailer"
+        android:icon="@drawable/ic_movie"
+        android:title="@string/trailers" />
+    <item
+        android:id="@+id/action_reviews"
         android:icon="@drawable/ic_user"
         android:title="@string/user_reviews" />
 </menu>

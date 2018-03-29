@@ -22,6 +22,7 @@ import static gr.mobap.popularmovies.data.MoviePreferences.API_KEY;
 import static gr.mobap.popularmovies.data.MoviePreferences.APP_KEY;
 import static gr.mobap.popularmovies.data.MoviePreferences.base_api;
 import static gr.mobap.popularmovies.data.MoviePreferences.movie_path;
+import static gr.mobap.popularmovies.data.MoviePreferences.video_path;
 
 public class NetworkUtility {
     private static final String TAG = NetworkUtility.class.getSimpleName();
@@ -45,8 +46,24 @@ public class NetworkUtility {
         }
     }
 
+    public static URL buildMoviesTrailer(String movieTrailerPath) { // Builds uri to get MoviesDb Trailer for specific movie
+        Uri builtTrailerUri = Uri.parse(base_api).buildUpon()
+                .appendPath(movie_path)
+                .appendPath(movieTrailerPath)
+                .appendPath(video_path)
+                .appendQueryParameter(API_KEY, APP_KEY)
+                .build();
+        try {
+            URL moviesTrailerUrl = new URL(builtTrailerUri.toString());
+            Log.v(TAG, "Trailer URL: " + moviesTrailerUrl);
+            return moviesTrailerUrl;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-    static String getResponseFromHttpUrl(URL uri) throws IOException {
+    public static String getResponseFromHttpUrl(URL uri) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(uri)
