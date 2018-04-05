@@ -1,4 +1,4 @@
-package gr.mobap.popularmovies;
+package gr.mobap.popularmovies.details;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,9 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import gr.mobap.popularmovies.R;
 
 
 public class OverviewFragment extends Fragment {

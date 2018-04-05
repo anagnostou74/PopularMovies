@@ -1,4 +1,4 @@
-package gr.mobap.popularmovies;
+package gr.mobap.popularmovies.details;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +21,8 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import gr.mobap.popularmovies.R;
+import gr.mobap.popularmovies.data.ViewPagerAdapter;
 import gr.mobap.popularmovies.model.MovieObject;
 
 import static gr.mobap.popularmovies.MainActivity.LOADER_BUNDLE;
@@ -175,8 +177,6 @@ public class DetailActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("overview", mItemData.getOverview());
         bundle.putInt("ID", mItemData.getId());
-        Log.v(MOVIE_EXTRA, "overview: " + mItemData.getOverview());
-        Log.v(MOVIE_EXTRA, "ID: " + mItemData.getId());
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 

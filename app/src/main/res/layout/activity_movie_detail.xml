@@ -162,7 +162,7 @@
                 android:id="@+id/viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="240dp"
-                tools:context="gr.mobap.popularmovies.DetailActivity" />
+                tools:context="gr.mobap.popularmovies.details.DetailActivity" />
 
             <android.support.design.widget.BottomNavigationView
                 android:id="@+id/navigation"

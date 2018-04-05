@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import gr.mobap.popularmovies.data.MovieAdapter;
+import gr.mobap.popularmovies.details.DetailActivity;
 import gr.mobap.popularmovies.model.MovieObject;
 import gr.mobap.popularmovies.utilities.MovieLoader;
 import gr.mobap.popularmovies.utilities.NetworkUtility;

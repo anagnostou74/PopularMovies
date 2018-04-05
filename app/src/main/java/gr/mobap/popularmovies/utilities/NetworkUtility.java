@@ -7,11 +7,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Scanner;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -22,6 +19,7 @@ import static gr.mobap.popularmovies.data.MoviePreferences.API_KEY;
 import static gr.mobap.popularmovies.data.MoviePreferences.APP_KEY;
 import static gr.mobap.popularmovies.data.MoviePreferences.base_api;
 import static gr.mobap.popularmovies.data.MoviePreferences.movie_path;
+import static gr.mobap.popularmovies.data.MoviePreferences.reviews_path;
 import static gr.mobap.popularmovies.data.MoviePreferences.video_path;
 
 public class NetworkUtility {
@@ -40,6 +38,23 @@ public class NetworkUtility {
             URL moviesQueryUrl = new URL(builtUri.toString());
             Log.v(TAG, "URL: " + moviesQueryUrl);
             return moviesQueryUrl;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static URL buildMoviesReviews(String movieReviewsPath) { // Builds uri to get MoviesDb Reviews for specific movie
+        Uri builtTrailerUri = Uri.parse(base_api).buildUpon()
+                .appendPath(movie_path)
+                .appendPath(movieReviewsPath)
+                .appendPath(reviews_path)
+                .appendQueryParameter(API_KEY, APP_KEY)
+                .build();
+        try {
+            URL moviesTrailerUrl = new URL(builtTrailerUri.toString());
+            Log.v(TAG, "Trailer URL: " + moviesTrailerUrl);
+            return moviesTrailerUrl;
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
