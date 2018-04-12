@@ -1,4 +1,4 @@
-package gr.mobap.popularmovies.data;
+package gr.mobap.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import gr.mobap.popularmovies.R;
 import gr.mobap.popularmovies.model.MovieObject;
 
-import static gr.mobap.popularmovies.data.MoviePreferences.base_image_url;
+import static gr.mobap.popularmovies.MoviePreferences.base_image_url;
 
 // Our Adapter used to bind our Movies data that are displayed in the RecyclerView
 

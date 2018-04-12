@@ -3,6 +3,7 @@ package gr.mobap.popularmovies.details;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -22,11 +23,11 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import gr.mobap.popularmovies.R;
-import gr.mobap.popularmovies.data.ViewPagerAdapter;
+import gr.mobap.popularmovies.adapters.ViewPagerAdapter;
 import gr.mobap.popularmovies.model.MovieObject;
 
 import static gr.mobap.popularmovies.MainActivity.LOADER_BUNDLE;
-import static gr.mobap.popularmovies.data.MoviePreferences.base_image_url;
+import static gr.mobap.popularmovies.MoviePreferences.base_image_url;
 
 // The Detail Activity responsible to show Title, release date, rating, overview and to display poster
 public class DetailActivity extends AppCompatActivity {
@@ -51,8 +52,12 @@ public class DetailActivity extends AppCompatActivity {
     TextView tvRating;
     @BindView(R.id.card_view)
     CardView cardView;
+    @BindView(R.id.activity_share)
+    CardView cardViewShare;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +75,8 @@ public class DetailActivity extends AppCompatActivity {
             if (intentDetailActivity.hasExtra(LOADER_BUNDLE)) {
                 MovieObject mItemData = intentDetailActivity.getParcelableExtra(LOADER_BUNDLE);
 
-                tvDisplayData.setText(mItemData.getOriginal_title());
-
+                String title = mItemData.getOriginal_title();
+                tvDisplayData.setText(title);
                 SimpleDateFormat sourceDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                 Date sourceDate = null;
                 try {
@@ -157,6 +162,18 @@ public class DetailActivity extends AppCompatActivity {
                         .fit()
                         .into(ivPosterHeader);
                 Log.v(MOVIE_EXTRA, "Title: " + ivPosterHeader);
+
+
+                cardViewShare.setOnClickListener(view -> {
+                    String appName = ("#" + getString(R.string.app_name));
+                    String text = String.format(getString(R.string.share), title, appName);
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+                    shareIntent.setType("text/plain");
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_txt)));
+                });
             }
         }
     }

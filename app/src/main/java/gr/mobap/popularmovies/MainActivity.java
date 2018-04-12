@@ -29,16 +29,16 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import gr.mobap.popularmovies.data.MovieAdapter;
+import gr.mobap.popularmovies.adapters.MovieAdapter;
 import gr.mobap.popularmovies.details.DetailActivity;
 import gr.mobap.popularmovies.model.MovieObject;
 import gr.mobap.popularmovies.utilities.MovieLoader;
 import gr.mobap.popularmovies.utilities.NetworkUtility;
 
-import static gr.mobap.popularmovies.data.MoviePreferences.LOADER_ID;
-import static gr.mobap.popularmovies.data.MoviePreferences.popular_path;
-import static gr.mobap.popularmovies.data.MoviePreferences.movieSection;
-import static gr.mobap.popularmovies.data.MoviePreferences.top_rated_path;
+import static gr.mobap.popularmovies.MoviePreferences.LOADER_ID;
+import static gr.mobap.popularmovies.MoviePreferences.popular_path;
+import static gr.mobap.popularmovies.MoviePreferences.movieSection;
+import static gr.mobap.popularmovies.MoviePreferences.top_rated_path;
 
 // Main Activity creates a 2 columns grid layout, settings with 'popular' and 'top rating' radio choices for users
 public class MainActivity extends AppCompatActivity implements

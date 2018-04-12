@@ -1,6 +1,5 @@
 package gr.mobap.popularmovies.details;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,8 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -28,11 +25,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import gr.mobap.popularmovies.R;
-import gr.mobap.popularmovies.data.TrailerAdapter;
+import gr.mobap.popularmovies.adapters.TrailerAdapter;
 import gr.mobap.popularmovies.utilities.NetworkUtility;
-
-import static gr.mobap.popularmovies.data.MoviePreferences.API_KEY;
-import static gr.mobap.popularmovies.data.MoviePreferences.APP_KEY;
 
 public class TrailerFragment extends Fragment {
     Integer mLabel;

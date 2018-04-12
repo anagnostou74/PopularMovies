@@ -1,4 +1,4 @@
-package gr.mobap.popularmovies.data;
+package gr.mobap.popularmovies.adapters;
 
 import android.content.Context;
 import android.content.res.Resources;

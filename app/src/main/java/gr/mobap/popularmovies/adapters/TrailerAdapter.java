@@ -1,4 +1,4 @@
-package gr.mobap.popularmovies.data;
+package gr.mobap.popularmovies.adapters;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;

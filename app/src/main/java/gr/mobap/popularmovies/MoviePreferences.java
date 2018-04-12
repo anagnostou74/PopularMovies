@@ -1,4 +1,4 @@
-package gr.mobap.popularmovies.data;
+package gr.mobap.popularmovies;
 
 
 import gr.mobap.popularmovies.BuildConfig;

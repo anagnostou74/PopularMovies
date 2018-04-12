@@ -1,4 +1,4 @@
-package gr.mobap.popularmovies.data;
+package gr.mobap.popularmovies.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

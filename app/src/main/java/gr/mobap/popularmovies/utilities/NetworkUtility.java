@@ -15,12 +15,12 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
-import static gr.mobap.popularmovies.data.MoviePreferences.API_KEY;
-import static gr.mobap.popularmovies.data.MoviePreferences.APP_KEY;
-import static gr.mobap.popularmovies.data.MoviePreferences.base_api;
-import static gr.mobap.popularmovies.data.MoviePreferences.movie_path;
-import static gr.mobap.popularmovies.data.MoviePreferences.reviews_path;
-import static gr.mobap.popularmovies.data.MoviePreferences.video_path;
+import static gr.mobap.popularmovies.MoviePreferences.API_KEY;
+import static gr.mobap.popularmovies.MoviePreferences.APP_KEY;
+import static gr.mobap.popularmovies.MoviePreferences.base_api;
+import static gr.mobap.popularmovies.MoviePreferences.movie_path;
+import static gr.mobap.popularmovies.MoviePreferences.reviews_path;
+import static gr.mobap.popularmovies.MoviePreferences.video_path;
 
 public class NetworkUtility {
     private static final String TAG = NetworkUtility.class.getSimpleName();

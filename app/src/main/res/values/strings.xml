@@ -2,6 +2,9 @@
     <string name="app_name">Movies</string>
     <string name="created_by">Created by Costas Anagnostou</string>
     <string name="action_refresh">refresh</string>
+    <string name="content_authority">gr.mobap.popularmovies</string>
+    <string name="share">Just found the perfect movie to see #%1$s. Thanks %2$s.</string>
+    <string name="share_txt">Share</string>
 
     <string-array name="image_sizes">
         <item>w92</item>
