@@ -3,7 +3,7 @@
     <string name="created_by">Created by Costas Anagnostou</string>
     <string name="action_refresh">refresh</string>
     <string name="content_authority">gr.mobap.popularmovies</string>
-    <string name="share">Just found the perfect movie to see #%1$s. Thanks %2$s.</string>
+    <string name="share">Just found the perfect movie to see "%1$s". Thanks %2$s.</string>
     <string name="share_txt">Share</string>
 
     <string-array name="image_sizes">
@@ -34,6 +34,7 @@
     <string name="rank">Ranking</string>
     <string name="popular">Popular</string>
     <string name="top_rated">Top rated</string>
+    <string name="favorites">Favorites</string>
     <string name="release_date">Release date:</string>
     <string name="rating">Rating :</string>
     <string name="details">Details</string>
@@ -41,6 +42,7 @@
     <string name="user_reviews">User reviews</string>
     <string name="trailer">Press to see movie trailer</string>
     <string name="user_name_review"> User %1$s writes:</string>
+    <string name="error">Something went wrong</string>
 
     <string name="lorem">Press to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailer</string>
 
