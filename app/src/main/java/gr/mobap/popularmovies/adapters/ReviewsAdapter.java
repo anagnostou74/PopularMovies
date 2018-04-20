@@ -15,10 +15,10 @@ import gr.mobap.popularmovies.R;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder> {
 
-    private ArrayList<String> review = new ArrayList<>();
-    private ArrayList<String> reviewer = new ArrayList<>();
+    private final ArrayList<String> review;
+    private final ArrayList<String> reviewer;
 
-    public ReviewsAdapter(Context context, ArrayList<String> review, ArrayList<String> reviewer) {
+    public ReviewsAdapter(ArrayList<String> review, ArrayList<String> reviewer) {
         this.review = review;
         this.reviewer = reviewer;
     }
@@ -48,7 +48,8 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewVi
 
     class ReviewViewHolder extends RecyclerView.ViewHolder {
 
-        TextView reviewTitle, reviewDesc;
+        final TextView reviewTitle;
+        final TextView reviewDesc;
 
         ReviewViewHolder(View view) {
             super(view);

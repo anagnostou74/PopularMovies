@@ -19,7 +19,7 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingStart="8dp"
-            android:text="@string/lorem"
+            android:text="@string/app_name"
             android:textAlignment="gravity"
             android:textColor="@color/white"
             android:textSize="20sp" />

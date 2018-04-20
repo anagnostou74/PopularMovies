@@ -26,6 +26,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private final Context mContext;
     private ArrayList<MovieObject> mMovieData;
     private final String imageSize;
+    private Boolean isFavorite;
 
     public MovieAdapter(Context context, PosterClickListener mPosterClickListener) {
         this.mContext = context;
@@ -56,8 +57,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     }
 
-    public void swapMovieData(ArrayList<MovieObject> movieData) {
+    public void swapMovieData(ArrayList<MovieObject> movieData, Boolean isFavorite) {
         this.mMovieData = movieData;
+        this.isFavorite = isFavorite;
         notifyDataSetChanged();
     }
 
@@ -67,7 +69,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     public interface PosterClickListener {
-        void onPosterClicked(MovieObject movie);
+        void onPosterClicked(MovieObject movie, Boolean isFavorite, View itemView);
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -79,7 +81,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             ButterKnife.bind(this, itemView);
             posterImageView.setOnClickListener(v -> {
                 int clickedPosition = getAdapterPosition();
-                mPosterClickListener.onPosterClicked(mMovieData.get(clickedPosition));
+                mPosterClickListener.onPosterClicked(mMovieData.get(clickedPosition), isFavorite, itemView);
             });
         }
     }

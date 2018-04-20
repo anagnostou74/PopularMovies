@@ -23,6 +23,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <RadioButton
+            android:id="@+id/radio_favorites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </RadioGroup>
 
     <LinearLayout
@@ -54,6 +59,19 @@
             android:drawablePadding="4dp"
             android:gravity="center_vertical"
             android:text="@string/top_rated"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/menu_textView_favorites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:drawableStart="@drawable/ic_favorite_white"
+            android:drawableLeft="@drawable/ic_favorite_white"
+            android:drawablePadding="4dp"
+            android:gravity="center_vertical"
+            android:text="@string/favorites"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 

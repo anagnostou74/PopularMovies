@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,13 +30,13 @@ import gr.mobap.popularmovies.adapters.TrailerAdapter;
 import gr.mobap.popularmovies.utilities.NetworkUtility;
 
 public class TrailerFragment extends Fragment {
-    Integer mLabel;
+    private Integer mLabel;
     private static final String TAG = TrailerFragment.class.getSimpleName();
     private TrailerAdapter trailerAdapter;
     @BindView(R.id.trailers_recycler_view)
     RecyclerView gridTrailersRecyclerView;
-    ArrayList<String> trailers = new ArrayList<>();
-    ArrayList<String> trailersName = new ArrayList<>();
+    private final ArrayList<String> trailers = new ArrayList<>();
+    private final ArrayList<String> trailersName = new ArrayList<>();
     private static final String MOVIE_EXTRA = "MOVIE";
 
     public TrailerFragment() {
@@ -44,7 +45,7 @@ public class TrailerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        LayoutInflater lf = getActivity().getLayoutInflater();
+        LayoutInflater lf = Objects.requireNonNull(getActivity()).getLayoutInflater();
         View view = lf.inflate(R.layout.detail_movie_trailer, container, false);
         ButterKnife.bind(this, view);
         Log.v(MOVIE_EXTRA, "ID in TrailerFragment:" + mLabel);
@@ -56,7 +57,7 @@ public class TrailerFragment extends Fragment {
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
-        String url = videoUri.toString();
+        String url = Objects.requireNonNull(videoUri).toString();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {

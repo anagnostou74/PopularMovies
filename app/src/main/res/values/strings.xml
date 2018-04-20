@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Movies</string>
-    <string name="created_by">Created by Costas Anagnostou</string>
+    <string name="app_name">My Cinema</string>
     <string name="action_refresh">refresh</string>
     <string name="content_authority">gr.mobap.popularmovies</string>
     <string name="share">Just found the perfect movie to see "%1$s". Thanks %2$s.</string>
@@ -22,12 +21,7 @@
         <item>original</item>
     </string-array>
 
-    <string name="movie_path">movie</string>
-    <string name="popular_path">popular</string>
-    <string name="top_rated_path">top_rated</string>
     <string name="movie_rank">preferable_rank</string>
-    <string name="base_image_url">http://image.tmdb.org/t/p/</string>
-    <string name="base_api">https://api.themoviedb.org/3/</string>
     <string name="no_internet">Please enable internet connection and press the "refresh" button.</string>
     <string name="radio_selected_key">pref_radio_selected_key</string>
     <string name="movie_poster">Movie Poster Image</string>
@@ -35,15 +29,12 @@
     <string name="popular">Popular</string>
     <string name="top_rated">Top rated</string>
     <string name="favorites">Favorites</string>
+    <string name="add_favorites">Movie added to favorites</string>
     <string name="release_date">Release date:</string>
     <string name="rating">Rating :</string>
     <string name="details">Details</string>
     <string name="trailers">Trailers</string>
     <string name="user_reviews">User reviews</string>
-    <string name="trailer">Press to see movie trailer</string>
     <string name="user_name_review"> User %1$s writes:</string>
-    <string name="error">Something went wrong</string>
-
-    <string name="lorem">Press to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailerPress to see movie trailer</string>
 
 </resources>

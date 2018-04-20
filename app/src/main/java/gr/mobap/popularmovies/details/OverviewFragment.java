@@ -15,7 +15,7 @@ import gr.mobap.popularmovies.R;
 
 public class OverviewFragment extends Fragment {
     private static final String TAG = OverviewFragment.class.getSimpleName();
-    CharSequence mLabel;
+    private CharSequence mLabel;
 
     public OverviewFragment() {
     }

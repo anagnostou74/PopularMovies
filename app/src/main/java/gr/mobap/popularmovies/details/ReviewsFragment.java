@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.ButterKnife;
 import gr.mobap.popularmovies.R;
@@ -29,11 +30,11 @@ import gr.mobap.popularmovies.utilities.NetworkUtility;
 
 
 public class ReviewsFragment extends Fragment {
-    Integer mLabel;
+    private Integer mLabel;
     private static final String TAG = TrailerFragment.class.getSimpleName();
     private ReviewsAdapter reviewsAdapter;
-    ArrayList<String> reviews = new ArrayList<>();
-    ArrayList<String> reviewer = new ArrayList<>();
+    private final ArrayList<String> reviews = new ArrayList<>();
+    private final ArrayList<String> reviewer = new ArrayList<>();
     private static final String MOVIE_EXTRA = "MOVIE";
 
     public ReviewsFragment() {
@@ -42,7 +43,7 @@ public class ReviewsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        LayoutInflater lf = getActivity().getLayoutInflater();
+        LayoutInflater lf = Objects.requireNonNull(getActivity()).getLayoutInflater();
         View view = lf.inflate(R.layout.detail_movie_reviews, container, false);
         ButterKnife.bind(this, view);
         Log.v(MOVIE_EXTRA, "ID in ReviewsFragment:" + mLabel);
@@ -50,14 +51,14 @@ public class ReviewsFragment extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         RecyclerView reviewsRecyclerView = view.findViewById(R.id.reviews_recycler_view);
         reviewsRecyclerView.setLayoutManager(layoutManager);
-        reviewsAdapter = new ReviewsAdapter(getContext(), reviews, reviewer);
+        reviewsAdapter = new ReviewsAdapter(reviews, reviewer);
         reviewsRecyclerView.setAdapter(reviewsAdapter);
 
         URL videoUri = NetworkUtility.buildMoviesReviews(String.valueOf(mLabel));
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
-        String url = videoUri.toString();
+        String url = Objects.requireNonNull(videoUri).toString();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {

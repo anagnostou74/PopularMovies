@@ -1,10 +1,16 @@
 package gr.mobap.popularmovies.utilities;
 
+import android.text.TextUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
+
 import gr.mobap.popularmovies.model.MovieObject;
+
 //class to read JSON data from MoviesDb API
 final class JsonUtils {
 
@@ -38,13 +44,13 @@ final class JsonUtils {
                 Integer vote_count;
                 Integer id;
                 Boolean video;
-                String vote_average;
+                Float vote_average;
                 String title;
-                Long popularity;
+                Float popularity;
                 String poster_path;
                 String original_language;
                 String original_title;
-                JSONArray genreIds;
+                String genreIds;
                 String backdrop_path;
                 Boolean adult;
                 String overview;
@@ -54,13 +60,24 @@ final class JsonUtils {
                 vote_count = nthJSONObject.optInt(VOTE_COUNT);
                 id = nthJSONObject.optInt(ID);
                 video = nthJSONObject.optBoolean(VIDEO);
-                vote_average = nthJSONObject.getString(VOTE_AVERAGE);
+                vote_average = ((float) nthJSONObject.optLong(VOTE_AVERAGE, 0));
                 title = nthJSONObject.optString(TITLE);
-                popularity = nthJSONObject.optLong(POPULARITY);
+                popularity = ((float) nthJSONObject.optLong(POPULARITY, 0));
                 poster_path = nthJSONObject.optString(POSTER_PATH);
                 original_language = nthJSONObject.optString(ORIGINAL_LANGUAGE);
                 original_title = nthJSONObject.optString(ORIGINAL_TITLE);
-                genreIds = nthJSONObject.optJSONArray(GENRE_IDS);
+
+                JSONArray jsonGenreIds;
+                List<Integer> genre_ids_list = null;
+                if (nthJSONObject.has(GENRE_IDS)) {
+                    jsonGenreIds = nthJSONObject.optJSONArray(GENRE_IDS);
+                    int genreSize = jsonGenreIds.length();
+                    genre_ids_list = new ArrayList<>(genreSize);
+                    for (int j = 0; j < genreSize; j++) {
+                        genre_ids_list.add(jsonGenreIds.optInt(j));
+                    }
+                }
+
                 backdrop_path = nthJSONObject.optString(BACKDROP_PATH);
                 adult = nthJSONObject.optBoolean(ADULT);
                 overview = nthJSONObject.optString(OVERVIEW);
@@ -75,11 +92,14 @@ final class JsonUtils {
                         poster_path,
                         original_language,
                         original_title,
-                        genreIds,
+                        genre_ids_list,
                         backdrop_path,
                         adult,
                         overview,
-                        release_date);
+                        release_date,
+                        null,
+                        null,
+                        null);
 
                 movieArrayList.add(movie);
             }
@@ -88,5 +108,26 @@ final class JsonUtils {
         }
         return movieArrayList;
 
+    }
+
+    public static List<Integer> getIntArrayFromJSON(String stringJSONData) {
+        List<Integer> genreIDs;
+        if (TextUtils.isEmpty(stringJSONData)) {
+            return null;
+        } else {
+            try {
+                JSONArray jsonArray = new JSONArray(stringJSONData);
+                int arSize = jsonArray.length();
+                genreIDs = new ArrayList<>(arSize);
+                for (int i = 0; i < arSize; i++) {
+                    genreIDs.add(jsonArray.optInt(i));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        }
+        return genreIDs;
     }
 }

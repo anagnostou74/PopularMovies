@@ -9,6 +9,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -25,7 +26,7 @@ import static gr.mobap.popularmovies.MoviePreferences.video_path;
 public class NetworkUtility {
     private static final String TAG = NetworkUtility.class.getSimpleName();
 
-    static URL buildUriRankMovies(String movieRankPath) { // Builds uri to get MoviesDb Api
+    public static URL buildUriRankMovies(String movieRankPath) { // Builds uri to get MoviesDb Api
         Uri builtUri = Uri.parse(base_api).buildUpon()
                 .appendPath(movie_path)
                 .appendPath(movieRankPath)
@@ -78,14 +79,15 @@ public class NetworkUtility {
         }
     }
 
-    public static String getResponseFromHttpUrl(URL uri) throws IOException {
+    public static String getResponseFromHttpUrl(Uri uri) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(uri)
+                .url(String.valueOf(uri))
                 .build();
         Response response = client.newCall(request).execute();
-        return response.body().string();
+        return Objects.requireNonNull(response.body()).string();
     }
+
 
     public static boolean isConnected(Context ctx) {
         boolean flag = false;

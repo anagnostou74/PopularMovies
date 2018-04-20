@@ -1,8 +1,13 @@
 package gr.mobap.popularmovies;
 
+import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -26,27 +31,37 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import gr.mobap.popularmovies.adapters.MovieAdapter;
+import gr.mobap.popularmovies.data.MoviesContract;
 import gr.mobap.popularmovies.details.DetailActivity;
 import gr.mobap.popularmovies.model.MovieObject;
 import gr.mobap.popularmovies.utilities.MovieLoader;
 import gr.mobap.popularmovies.utilities.NetworkUtility;
 
-import static gr.mobap.popularmovies.MoviePreferences.LOADER_ID;
+import static gr.mobap.popularmovies.MoviePreferences.favorites_path;
 import static gr.mobap.popularmovies.MoviePreferences.popular_path;
-import static gr.mobap.popularmovies.MoviePreferences.movieSection;
 import static gr.mobap.popularmovies.MoviePreferences.top_rated_path;
+import static gr.mobap.popularmovies.details.DetailActivity.FAVORITES_ACTIVITY_RESULT;
 
 // Main Activity creates a 2 columns grid layout, settings with 'popular' and 'top rating' radio choices for users
 public class MainActivity extends AppCompatActivity implements
         MovieAdapter.PosterClickListener,
-        android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<MovieObject>> {
-    public static final String LOADER_BUNDLE = "movie_loader_bundle";
-
+        android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<MovieObject>>, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int LOADER_ID_INTERNET = 11;
+    private static final int LOADER_ID_DATABASE = 22;
+    private static final int CHANGED_FAVORITES_REQUEST = 33;
+    private static final String LOADER_BUNDLE = "movie_loader_bundle";
+    public static final String INTENT_MOVIE_EXTRA = "intent_movie_extra";
+    public static final String INTENT_EXTRA_IS_FAVORITE = "intent_extra_is_favorite";
+    private static final String SAVED_INSTANCE_STATE_KEY = "saved_instance_bundle";
+    private static String movieSection;
+    private Integer outStateRecyclerViewPosition = null;
+
     private PopupWindow popupWindow;
     private MovieAdapter movieAdapter;
     private int selectedRadioId;
@@ -67,18 +82,42 @@ public class MainActivity extends AppCompatActivity implements
         GridLayoutManager manager = new GridLayoutManager(this, spanCount);
         gridRecyclerView.setLayoutManager(manager);
         gridRecyclerView.setHasFixedSize(true);
+
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            gridRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        } else {
+            gridRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        }
+
         movieAdapter = new MovieAdapter(this, this);
         gridRecyclerView.setAdapter(movieAdapter);
 
-        showLoadingView();
 
+        //Open the radio choices to the last selected
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         movieSection = sharedPrefs.getString(getString(R.string.movie_rank), popular_path);
         selectedRadioId = sharedPrefs.getInt(getString(R.string.radio_selected_key), R.id.radio_popular);
+        sharedPrefs.registerOnSharedPreferenceChangeListener(this);
 
-        Bundle bundle = new Bundle(1);
-        bundle.putString(LOADER_BUNDLE, movieSection);
-        getSupportLoaderManager().initLoader(LOADER_ID, bundle, this).startLoading();
+        int loaderID;
+        String stringURI;
+        if (movieSection.equals(favorites_path)) {
+            loaderID = LOADER_ID_DATABASE;
+            stringURI = MoviesContract.MoviesEntry.CONTENT_URI.toString();
+        } else {
+            showLoadingView();
+            loaderID = LOADER_ID_INTERNET;
+            stringURI = Objects.requireNonNull(NetworkUtility.buildUriRankMovies(movieSection)).toString();
+        }
+
+        Bundle bundleURI = new Bundle(1);
+        bundleURI.putString(LOADER_BUNDLE, stringURI);
+        getSupportLoaderManager().initLoader(loaderID, bundleURI, this);
+
+        if (savedInstanceState != null) {
+            outStateRecyclerViewPosition = savedInstanceState.getInt(SAVED_INSTANCE_STATE_KEY);
+        }
     }
 
     @Override
@@ -107,6 +146,8 @@ public class MainActivity extends AppCompatActivity implements
             }
             case R.id.menu_refresh: {
                 restartLoader(movieSection);
+                Log.d(TAG, "menu_refresh: " + movieSection);
+
                 break;
             }
         }
@@ -124,51 +165,53 @@ public class MainActivity extends AppCompatActivity implements
                 popupLayout,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-
         popupWindow.setOutsideTouchable(true);
         popupWindow.setOnDismissListener(() -> {
 
         });
-
         popupWindow.setAnimationStyle(1);
         popupWindow.showAsDropDown(menuItemView);
 
         RadioGroup radioGroup = popupLayout.findViewById(R.id.radioGroup);
-        setRadioSelection(radioGroup, selectedRadioId, false);
+        radioGroup.clearCheck();
+        radioGroup.check(selectedRadioId);
 
         RadioButton radioButtonPopular = popupLayout.findViewById(R.id.radio_popular);
         View.OnClickListener radioPopularListener = v -> {
-            loadPopular();
-            setRadioSelection(radioGroup, R.id.radio_popular, true);
+            restartLoader(popular_path);
+            radioGroup.clearCheck();
+            radioGroup.check(R.id.radio_popular);
+            popupWindow.dismiss();
+            saveMovieSectionPreference(popular_path, R.id.radio_popular);
+            Log.d(TAG, "popular_path: " + popular_path);
         };
         radioButtonPopular.setOnClickListener(radioPopularListener);
         popupLayout.findViewById(R.id.menu_textView_popular).setOnClickListener(radioPopularListener);
 
         RadioButton radioButtonTopRated = popupLayout.findViewById(R.id.radio_top_rated);
         View.OnClickListener radio_top_rated = v -> {
-            loadTopRated();
-            setRadioSelection(radioGroup, R.id.radio_top_rated, true);
+            restartLoader(top_rated_path);
+            radioGroup.clearCheck();
+            radioGroup.check(R.id.radio_top_rated);
+            popupWindow.dismiss();
+            saveMovieSectionPreference(top_rated_path, R.id.radio_top_rated);
+            Log.d(TAG, "top_rated_path: " + top_rated_path);
         };
         radioButtonTopRated.setOnClickListener(radio_top_rated);
         popupLayout.findViewById(R.id.menu_textView_top_rated).setOnClickListener(radio_top_rated);
 
-    }
+        RadioButton radioButtonFavorite = popupLayout.findViewById(R.id.radio_favorites);
+        View.OnClickListener radio_favorites = v -> {
+            restartLoader(favorites_path);
+            radioGroup.clearCheck();
+            radioGroup.check(R.id.radio_favorites);
+            popupWindow.dismiss();
+            saveMovieSectionPreference(favorites_path, R.id.radio_favorites);
+            Log.d(TAG, "menu_refresh: " + favorites_path);
+        };
+        radioButtonFavorite.setOnClickListener(radio_favorites);
+        popupLayout.findViewById(R.id.menu_textView_favorites).setOnClickListener(radio_favorites);
 
-    private void setRadioSelection(RadioGroup radioGroup, int radioId, boolean dismiss) {
-        radioGroup.clearCheck();
-        radioGroup.check(radioId);
-        selectedRadioId = radioId;
-        if (dismiss) popupWindow.dismiss();
-    }
-
-    private void loadPopular() {
-        restartLoader(popular_path);
-        saveMovieSectionPreference(popular_path, R.id.radio_popular);
-    }
-
-    private void loadTopRated() {
-        restartLoader(top_rated_path);
-        saveMovieSectionPreference(top_rated_path, R.id.radio_top_rated);
     }
 
     private void saveMovieSectionPreference(String section, int radioId) {
@@ -180,10 +223,22 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void restartLoader(String rank) {
-        showLoadingView();
-        Bundle bundle = new Bundle(1);
-        bundle.putString(LOADER_BUNDLE, rank);
-        getSupportLoaderManager().restartLoader(LOADER_ID, bundle, this);
+
+        String stringURI;
+        int loaderID;
+        if (rank.equals(favorites_path)) {
+            loaderID = LOADER_ID_DATABASE;
+            stringURI = MoviesContract.MoviesEntry.CONTENT_URI.toString();
+        } else {
+            showLoadingView();
+            loaderID = LOADER_ID_INTERNET;
+            stringURI = Objects.requireNonNull(NetworkUtility.buildUriRankMovies(movieSection)).toString();
+        }
+
+        Bundle bundleURI = new Bundle(1);
+        bundleURI.putString(LOADER_BUNDLE, stringURI);
+        getSupportLoaderManager().restartLoader(loaderID, bundleURI, this);
+
         gridRecyclerView.smoothScrollToPosition(0);
     }
 
@@ -193,6 +248,8 @@ public class MainActivity extends AppCompatActivity implements
             if (popupWindow.isShowing()) {
                 popupWindow.dismiss();
             } else {
+                android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                        .unregisterOnSharedPreferenceChangeListener(this);
                 super.onBackPressed();
             }
         } else {
@@ -203,19 +260,26 @@ public class MainActivity extends AppCompatActivity implements
     @NonNull
     @Override
     public Loader<ArrayList<MovieObject>> onCreateLoader(int id, Bundle args) {
-        String section = args.getString(LOADER_BUNDLE);
-        return new MovieLoader(getApplicationContext(), section);
+        Uri queryUri = Uri.parse(args.getString(LOADER_BUNDLE));
+
+        return new MovieLoader(getApplicationContext(), queryUri, id == LOADER_ID_DATABASE);
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<ArrayList<MovieObject>> loader, ArrayList<MovieObject> data) {
-        movieAdapter.swapMovieData(data);
+        Boolean isFavorite = loader.getId() == LOADER_ID_DATABASE;
+        movieAdapter.swapMovieData(data, isFavorite);
         showDataView();
+        if (outStateRecyclerViewPosition != null) {
+            gridRecyclerView.smoothScrollToPosition(outStateRecyclerViewPosition);
+            outStateRecyclerViewPosition = null;
+        }
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<ArrayList<MovieObject>> loader) {
-        movieAdapter.swapMovieData(null);
+        Boolean isFavorite = loader.getId() == LOADER_ID_DATABASE;
+        movieAdapter.swapMovieData(null, isFavorite);
     }
 
     private void showDataView() {
@@ -228,8 +292,7 @@ public class MainActivity extends AppCompatActivity implements
         gridRecyclerView.setVisibility(View.INVISIBLE);
         loading_indicator.setVisibility(View.VISIBLE);
         if (!NetworkUtility.isConnected(MainActivity.this)) {
-            Toast.makeText(MainActivity.this,
-                    R.string.no_internet, Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
             mErrorMessageDisplay.setVisibility(View.VISIBLE);
             mErrorMessageDisplay.setText(getResources().getString(R.string.no_internet));
             loading_indicator.setVisibility(View.INVISIBLE);
@@ -237,12 +300,40 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onPosterClicked(MovieObject movie) { // Users action starts activity to display movie details
-        Intent intentDetailActivity = new Intent(this, DetailActivity.class);
-        intentDetailActivity.putExtra(LOADER_BUNDLE, movie);
-        startActivity(intentDetailActivity);
-
-        Log.v(TAG, "Title: " + movie.getTitle());
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int position = ((GridLayoutManager) gridRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+        outState.putInt(SAVED_INSTANCE_STATE_KEY, position);
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        restartLoader(movieSection);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    @SuppressLint("RestrictedApi")
+    public void onPosterClicked(MovieObject movie, Boolean isFavorite, View itemView) {
+        Intent detailsIntent = new Intent(MainActivity.this, DetailActivity.class);
+        detailsIntent.putExtra(INTENT_MOVIE_EXTRA, movie);
+        detailsIntent.putExtra(INTENT_EXTRA_IS_FAVORITE, isFavorite);
+        ActivityOptions activityOptions = ActivityOptions.makeScaleUpAnimation(itemView, 0, 0, itemView.getWidth(), itemView.getHeight());
+        startActivityForResult(detailsIntent, CHANGED_FAVORITES_REQUEST, activityOptions.toBundle());
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CHANGED_FAVORITES_REQUEST && resultCode == RESULT_OK && data.getBooleanExtra(FAVORITES_ACTIVITY_RESULT, false)) {
+            restartLoader(favorites_path);
+            saveMovieSectionPreference(favorites_path, R.id.radio_favorites);
+        }
+    }
 }

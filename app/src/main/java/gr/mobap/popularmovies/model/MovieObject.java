@@ -3,27 +3,33 @@ package gr.mobap.popularmovies.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.json.JSONArray;
+import java.util.ArrayList;
+import java.util.List;
+
 //
 public class MovieObject implements Parcelable {
 
     private final Integer vote_count;
     private final Integer id;
-    private Boolean video;
-    private final String vote_average;
+    private final Boolean video;
+    private final Float vote_average;
     private final String title;
-    private final Long popularity;
+    private final Float popularity;
     private final String poster_path;
     private final String original_language;
     private final String original_title;
-    private JSONArray genre_ids;
+    private final List<Integer> genre_ids;
     private final String backdrop_path;
-    private Boolean adult;
+    private final Boolean adult;
     private final String overview;
     private final String release_date;
 
+    private Boolean is_favorite;
+    private String poster_local_path;
+    private String backdrop_local_path;
 
-    public MovieObject(Integer vote_count, Integer id, Boolean video, String vote_average, String title, Long popularity, String poster_path, String original_language, String original_title, JSONArray genre_ids, String backdrop_path, Boolean adult, String overview, String release_date) {
+
+    public MovieObject(Integer vote_count, Integer id, Boolean video, Float vote_average, String title, Float popularity, String poster_path, String original_language, String original_title, List<Integer> genre_ids, String backdrop_path, Boolean adult, String overview, String release_date, Boolean is_favorite, String poster_local_path, String backdrop_local_path) {
         this.vote_count = vote_count;
         this.id = id;
         this.video = video;
@@ -38,23 +44,40 @@ public class MovieObject implements Parcelable {
         this.adult = adult;
         this.overview = overview;
         this.release_date = release_date;
+
+        this.is_favorite = is_favorite;
+        this.poster_local_path = poster_local_path;
+        this.backdrop_local_path = backdrop_local_path;
     }
 
     private MovieObject(Parcel movie) {
-        vote_count = movie.readInt();
-        id = movie.readInt();
-        //video = movie.readSparseBooleanArray();
-        vote_average = movie.readString();
+        vote_count = movie.readByte() == 0x00 ? null : movie.readInt();
+        id = movie.readByte() == 0x00 ? null : movie.readInt();
+        byte video_value = movie.readByte();
+        video = video_value == 0x02 ? null : video_value != 0x00;
+        vote_average = movie.readByte() == 0x00 ? null : movie.readFloat();
         title = movie.readString();
-        popularity = movie.readLong();
+        popularity = movie.readByte() == 0x00 ? null : movie.readFloat();
         poster_path = movie.readString();
         original_language = movie.readString();
         original_title = movie.readString();
-        //genre_ids = movie.readArray();
+        if (movie.readByte() == 0x01) {
+            genre_ids = new ArrayList<>();
+            movie.readList(genre_ids, Integer.class.getClassLoader());
+        } else {
+            genre_ids = null;
+        }
         backdrop_path = movie.readString();
-        //movie.readBooleanArray(new Boolean[]{adult});
+        byte adult_value = movie.readByte();
+        adult = adult_value == 0x02 ? null : adult_value != 0x00;
         overview = movie.readString();
         release_date = movie.readString();
+
+        byte is_favorite_value = movie.readByte();
+        is_favorite = is_favorite_value == 0x02 ? null : is_favorite_value != 0x00;
+        poster_local_path = movie.readString();
+        backdrop_local_path = movie.readString();
+
     }
 
     public Integer getVote_count() {
@@ -73,7 +96,7 @@ public class MovieObject implements Parcelable {
         return poster_path;
     }
 
-    public String getVote_average() {
+    public Float getVote_average() {
         return vote_average;
     }
 
@@ -81,7 +104,7 @@ public class MovieObject implements Parcelable {
         return title;
     }
 
-    public Long getPopularity() {
+    public Float getPopularity() {
         return popularity;
     }
 
@@ -93,7 +116,7 @@ public class MovieObject implements Parcelable {
         return original_title;
     }
 
-    public JSONArray getGenre_ids() {
+    public List<Integer> getGenre_ids() {
         return genre_ids;
     }
 
@@ -117,6 +140,32 @@ public class MovieObject implements Parcelable {
         return poster_path;
     }
 
+
+    public Boolean getFavorite() {
+        return is_favorite;
+    }
+
+    public String getPosterFilePath() {
+        return poster_local_path;
+    }
+
+    public String getBackdropFilePath() {
+        return backdrop_local_path;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        is_favorite = favorite;
+    }
+
+    public void setPosterFilePath(String set_poster_local_path) {
+        this.poster_local_path = set_poster_local_path;
+    }
+
+    public void setBackdropFilePath(String set_backdrop_local_path) {
+        this.backdrop_local_path = set_backdrop_local_path;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -124,20 +173,61 @@ public class MovieObject implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(vote_count);
-        dest.writeInt(id);
-        //dest.writeSparseBooleanArray(video);
-        dest.writeString(vote_average);
+        if (vote_count == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(vote_count);
+        }
+        if (id == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(id);
+        }
+        if (video == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (video ? 0x01 : 0x00));
+        }
+        if (vote_average == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeFloat(vote_average);
+        }
         dest.writeString(title);
-        dest.writeLong(popularity);
+        if (popularity == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeFloat(popularity);
+        }
         dest.writeString(poster_path);
         dest.writeString(original_language);
         dest.writeString(original_title);
-        //dest.writeArray(new JSONArray[]{genre_ids});
+        if (genre_ids == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(genre_ids);
+        }
         dest.writeString(backdrop_path);
-        //dest.writeBooleanArray(new Boolean[]{adult});
+        if (adult == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (adult ? 0x01 : 0x00));
+        }
         dest.writeString(overview);
         dest.writeString(release_date);
+
+        if (is_favorite == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (is_favorite ? 0x01 : 0x00));
+        }
+        dest.writeString(poster_local_path);
+        dest.writeString(backdrop_local_path);
     }
 
     public static final Parcelable.Creator<MovieObject> CREATOR = new Parcelable.Creator<MovieObject>() {
