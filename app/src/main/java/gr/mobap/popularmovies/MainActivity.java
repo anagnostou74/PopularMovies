@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -39,6 +38,8 @@ import gr.mobap.popularmovies.adapters.MovieAdapter;
 import gr.mobap.popularmovies.data.MoviesContract;
 import gr.mobap.popularmovies.details.DetailActivity;
 import gr.mobap.popularmovies.model.MovieObject;
+import gr.mobap.popularmovies.utilities.CheckNetwork;
+import gr.mobap.popularmovies.utilities.ConnectivityReceiver;
 import gr.mobap.popularmovies.utilities.MovieLoader;
 import gr.mobap.popularmovies.utilities.NetworkUtility;
 
@@ -50,7 +51,8 @@ import static gr.mobap.popularmovies.details.DetailActivity.FAVORITES_ACTIVITY_R
 // Main Activity creates a 2 columns grid layout, settings with 'popular' and 'top rating' radio choices for users
 public class MainActivity extends AppCompatActivity implements
         MovieAdapter.PosterClickListener,
-        android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<MovieObject>>, SharedPreferences.OnSharedPreferenceChangeListener {
+        android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<MovieObject>>, SharedPreferences.OnSharedPreferenceChangeListener,
+        ConnectivityReceiver.ConnectivityReceiverListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int LOADER_ID_INTERNET = 11;
     private static final int LOADER_ID_DATABASE = 22;
@@ -72,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.error_message)
     TextView mErrorMessageDisplay;
 
+    boolean isConnected = ConnectivityReceiver.isConnected();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements
 
         movieAdapter = new MovieAdapter(this, this);
         gridRecyclerView.setAdapter(movieAdapter);
-
 
         //Open the radio choices to the last selected
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -269,11 +272,14 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(@NonNull Loader<ArrayList<MovieObject>> loader, ArrayList<MovieObject> data) {
         Boolean isFavorite = loader.getId() == LOADER_ID_DATABASE;
         movieAdapter.swapMovieData(data, isFavorite);
-        showDataView();
-        if (outStateRecyclerViewPosition != null) {
+        if (isConnected && outStateRecyclerViewPosition != null) {
             gridRecyclerView.smoothScrollToPosition(outStateRecyclerViewPosition);
             outStateRecyclerViewPosition = null;
+        } if (!isConnected && outStateRecyclerViewPosition != null) {
+            Toast.makeText(MainActivity.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
+        showDataView();
+
     }
 
     @Override
@@ -291,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements
     private void showLoadingView() {
         gridRecyclerView.setVisibility(View.INVISIBLE);
         loading_indicator.setVisibility(View.VISIBLE);
-        if (!NetworkUtility.isConnected(MainActivity.this)) {
+        if (!isConnected) {
             Toast.makeText(MainActivity.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
             mErrorMessageDisplay.setVisibility(View.VISIBLE);
             mErrorMessageDisplay.setText(getResources().getString(R.string.no_internet));
@@ -335,5 +341,21 @@ public class MainActivity extends AppCompatActivity implements
             restartLoader(favorites_path);
             saveMovieSectionPreference(favorites_path, R.id.radio_favorites);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // register connection status listener
+        CheckNetwork.getInstance().setConnectivityListener(this);
+    }
+
+    /**
+     * Callback will be triggered when there is change in
+     * network connection
+     */
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        Toast.makeText(MainActivity.this, R.string.internet, Toast.LENGTH_SHORT).show();
     }
 }

@@ -40,14 +40,15 @@ import gr.mobap.popularmovies.R;
 import gr.mobap.popularmovies.adapters.ViewPagerAdapter;
 import gr.mobap.popularmovies.data.MoviesContract;
 import gr.mobap.popularmovies.model.MovieObject;
-import gr.mobap.popularmovies.utilities.NetworkUtility;
+import gr.mobap.popularmovies.utilities.CheckNetwork;
+import gr.mobap.popularmovies.utilities.ConnectivityReceiver;
 
 import static gr.mobap.popularmovies.MainActivity.INTENT_EXTRA_IS_FAVORITE;
 import static gr.mobap.popularmovies.MainActivity.INTENT_MOVIE_EXTRA;
 import static gr.mobap.popularmovies.MoviePreferences.base_image_url;
 
 // The Detail Activity responsible to show Title, release date, rating, overview and to display poster
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
     private static final String TAG = DetailActivity.class.getSimpleName();
     public static final String FAVORITES_ACTIVITY_RESULT = "activity_result";
     private static final String SAVED_INSTANCE_STATE_KEY = "saved_instance_bundle";
@@ -107,7 +108,7 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
         if (!gotFavorite) mMovieDataFromIntent.setFavorite(false);
-        Boolean isConnected = NetworkUtility.isConnected(mContext);
+        boolean isConnected = ConnectivityReceiver.isConnected();
         if (!isConnected) {
             Toast.makeText(mContext, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
@@ -247,7 +248,7 @@ public class DetailActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
 
         cardViewShare.setOnClickListener(view -> {
-            if (!NetworkUtility.isConnected(this)) {
+            if (!isConnected) {
                 Toast.makeText(this, R.string.no_internet, Toast.LENGTH_SHORT).show();
             } else {
                 String appName = ("#" + getString(R.string.app_name));
@@ -357,5 +358,22 @@ public class DetailActivity extends AppCompatActivity {
         int position = coordinator.getScrollY();
         outState.putInt(SAVED_INSTANCE_STATE_KEY, position);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // register connection status listener
+        CheckNetwork.getInstance().setConnectivityListener(this);
+    }
+
+    /**
+     * Callback will be triggered when there is change in
+     * network connection
+     */
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        Toast.makeText(DetailActivity.this, R.string.internet, Toast.LENGTH_SHORT).show();
+    }
+
 
 }

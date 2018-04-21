@@ -42,7 +42,15 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
         holder.cardView.setOnClickListener(view -> {
             Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailers.get(holder.getAdapterPosition())));
+            if (appIntent.resolveActivity(context.getPackageManager()) != null) {
+                context.startActivity(appIntent);
+            }
             Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + trailers.get(holder.getAdapterPosition())));
+            // Verify that the intent will resolve to an activity
+            if (webIntent.resolveActivity(context.getPackageManager()) != null) {
+                context.startActivity(webIntent);
+            }
+
             try {
                 context.startActivity(appIntent);
             } catch (ActivityNotFoundException ex) {

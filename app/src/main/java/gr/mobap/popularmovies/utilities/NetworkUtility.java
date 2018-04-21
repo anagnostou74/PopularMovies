@@ -1,8 +1,5 @@
 package gr.mobap.popularmovies.utilities;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
@@ -15,7 +12,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static android.content.Context.CONNECTIVITY_SERVICE;
 import static gr.mobap.popularmovies.MoviePreferences.API_KEY;
 import static gr.mobap.popularmovies.MoviePreferences.APP_KEY;
 import static gr.mobap.popularmovies.MoviePreferences.base_api;
@@ -87,21 +83,4 @@ public class NetworkUtility {
         Response response = client.newCall(request).execute();
         return Objects.requireNonNull(response.body()).string();
     }
-
-
-    public static boolean isConnected(Context ctx) {
-        boolean flag = false;
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) ctx.getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = null;
-        if (connectivityManager != null) {
-            networkInfo = connectivityManager.getActiveNetworkInfo();
-        }
-        if (networkInfo != null && networkInfo.isConnected()) {
-            flag = true;
-        }
-        return flag;
-    }
-
-
 }

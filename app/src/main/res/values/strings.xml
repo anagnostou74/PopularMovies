@@ -23,6 +23,7 @@
 
     <string name="movie_rank">preferable_rank</string>
     <string name="no_internet">Please enable internet connection and press the "refresh" button.</string>
+    <string name="internet">Connected to Internet.</string>
     <string name="radio_selected_key">pref_radio_selected_key</string>
     <string name="movie_poster">Movie Poster Image</string>
     <string name="rank">Ranking</string>
