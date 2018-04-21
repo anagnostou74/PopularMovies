@@ -1,5 +1,5 @@
-# PopularMovies
-Popular Movies, a project for <a href="https://www.udacity.com/course/android-developer-nanodegree-by-google--nd801" target="_blank">Android Developer Nanodegree Program by Google and Udacity</a>.
+#PopularMovies Project
+My Cinema, a project for <a href="https://www.udacity.com/course/android-developer-nanodegree-by-google--nd801" target="_blank">Android Developer Nanodegree Program by Google and Udacity</a>.
 
 The application uses <a href="https://www.themoviedb.org/" target="_blank">MovieDB API</a> to display movie posters and allow users to access information such as: title, rating, release date, a plot synopsis, to see the trailer, read reviews from other users and also to add a movie as their favorite to a local database.
 
